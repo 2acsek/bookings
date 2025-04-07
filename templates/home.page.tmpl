@@ -1,0 +1,14 @@
+{{template "base" .}}
+
+{{define "content"}}
+    <div>
+        <h1>
+            This is the Home Page!
+        </h1>
+        <h3>
+            The color is: <span style="color: {{index .StringMap "color"}};">
+                {{index .StringMap "color"}}
+            </span>
+        </h3>
+    </div>
+{{end}}
