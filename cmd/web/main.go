@@ -17,9 +17,12 @@ const portNumber = ":8080"
 var app config.AppConfig
 var session *scs.SessionManager
 
+// main is the main function
 func main() {
+	// change this to true when in production
 	app.InProduction = false
 
+	// set up the session
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
 	session.Cookie.Persist = true
@@ -35,23 +38,13 @@ func main() {
 
 	app.TemplateCache = tc
 	app.UseCache = false
-	repo := handlers.NewRepo(&app)
 
-	render.NewTemplates(&app)
+	repo := handlers.NewRepo(&app)
 	handlers.NewHandlers(repo)
 
-	// Anonymous function
-	http.HandleFunc("/anonymous", func(w http.ResponseWriter, r *http.Request) {
-		n, err := fmt.Fprintf(w, "This endpoint is handled by an anonymous func.")
+	render.NewTemplates(&app)
 
-		fmt.Printf("Number of bytes written: %d\n", n)
-
-		if err != nil {
-			fmt.Println(err)
-		}
-	})
-
-	fmt.Printf("Starting application on port %s\n", portNumber)
+	fmt.Println(fmt.Sprintf("Staring application on port %s", portNumber))
 
 	srv := &http.Server{
 		Addr:    portNumber,
@@ -59,5 +52,7 @@ func main() {
 	}
 
 	err = srv.ListenAndServe()
-	log.Fatal((err))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
